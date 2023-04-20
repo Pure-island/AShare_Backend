@@ -7,6 +7,8 @@ import com.backend.server.mapper.UserMapper;
 import com.backend.server.service.UserService;
 import com.backend.server.utils.FormatUtil;
 import com.backend.server.utils.JwtTokenUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+@Api(tags = {"用户"})
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -33,6 +36,7 @@ public class UserController {
     /**
      * 登录返回token
      */
+    @ApiOperation("登录")
     @PostMapping("/login")
     public Result login(String username, String password) {
         if (!formatUtil.checkStringNull(username, password)) {

@@ -14,14 +14,14 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: 39.105.171.87:8848
     gateway:
       routes:
         - id: backend-search
           uri: lb://backend-search
           predicates:
-            - Path=/search/**
+            - Path=/search/**,
         - id: backend-server
           uri: lb://backend-server
           predicates:
-            - Path=/favor/**, /user/**, /follow/**, /portal/**, /notice/**
+            - Path=/favor/**, /user/**, /follow/**, /portal/**, /notice/**, /swagger-ui/**,

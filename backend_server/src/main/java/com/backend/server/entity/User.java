@@ -3,8 +3,10 @@ package com.backend.server.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
+@ApiModel("用户实体类")
 @Data
 @TableName(value = "user")
 public class User {
