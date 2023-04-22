@@ -1,16 +1,18 @@
 package com.backend.search.entity;
 
-import java.util.List;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 @Data
 @Document(collection = "paper")
+@TableName(autoResultMap = true)
 public class Paper {
 
-	@Id
+	@TableId
 	private String _id;
 	private String pid;
 	private String title;
