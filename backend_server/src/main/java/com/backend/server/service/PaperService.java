@@ -53,6 +53,8 @@ public class PaperService {
         System.out.println("pid:"+pid);
         firstNode.setName(GetPaperNameByPid(pid));
         referPaperResult.getNodes().add(firstNode);
+        if(paper.get("references")==null)
+            return referPaperResult;
         for(Object o:(List<?>)paper.get("references"))
         {
             String tarPid=o.toString();

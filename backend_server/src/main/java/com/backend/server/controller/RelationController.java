@@ -34,7 +34,9 @@ public class RelationController {
     @PostMapping("/getRelatePaper")
     public Result getRelatePaper(String pid)
     {
+        System.out.println("getRelatePaper:"+pid);
         ReferPaperResult referPaperResult=paperService.queryRelatePaperByPid(pid);
+
         return Result.create(200,"success",referPaperResult);
     }
 }
