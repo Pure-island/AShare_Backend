@@ -63,11 +63,11 @@ public class PortalController {
      */
     @PostMapping("/profile/view")
     public Result viewPortal(String aid) {
-        System.out.println("aid:"+aid);
+        System.out.println("11111aid:"+aid);
         Map authors = authorService.queryAuthor(aid);
-        System.out.println("authors:"+authors.size());
+        System.out.println(authors.get("index").toString());
         List<Map> papers = paperService.queryPaperByAuthorId(aid);
-        System.out.println("papers.size:"+papers.size());
+        System.out.println("111111papers.size:"+papers.size());
         PortalReturn portalReturn = new PortalReturn(authors, papers);
         return Result.create(200, "success", portalReturn);
     }
@@ -107,6 +107,11 @@ public class PortalController {
 
     @PostMapping("/personal_center/academic_homepage/check")
     public Result certificationPortal(Integer userId, String aid, String email, String code) {
+        System.out.println("check code");
+        System.out.println("userId"+userId.toString());
+        System.out.println("aid"+aid);
+        System.out.println("email"+email);
+        System.out.println("code:"+code);
         //查看验证码是否正确
         boolean isTrue = portalService.checkMailCode(email, code);
         if (!isTrue) return Result.create(StatusCode.CODE_ERROR, "验证码错误");
@@ -114,7 +119,7 @@ public class PortalController {
         String username = userService.getUserById(userId).getName();
         authorService.bindUser(userId, username, aid);
         userService.bindPortal(userId, aid);
-
+        System.out.println("bind success");
         return Result.create(200, "success");
     }
 
@@ -126,13 +131,15 @@ public class PortalController {
     @PostMapping("/personal_center/academic_homepage/bind")
     public Result sendmail(String mail){
         if (!FormatUtil.checkMail(mail)) return Result.create(StatusCode.INFORMATION_ERROR, "邮箱格式错误");
-        String redisMailCode = redisTemplate.opsForValue().get("MAIL_" + mail);
-        if(redisMailCode!=null){
-            return Result.create(200,"请稍后再发送");
-        }else{
+        //String redisMailCode = redisTemplate.opsForValue().get("MAIL_" + mail);
+        //if(redisMailCode!=null){
+         //   return Result.create(200,"请稍后再发送");
+        //}else{
+            System.out.println("controller:发送邮件");
             portalService.sendMail(mail);
+            System.out.println("controller:发送邮件over");
             return Result.create(200,"发送成功");
-        }
+       // }
     }
 
     @PostMapping("/personal_center/academic_homepage/unbind")

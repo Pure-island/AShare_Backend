@@ -24,4 +24,4 @@ spring:
         - id: backend-server
           uri: lb://backend-server
           predicates:
-            - Path=/favor/**, /user/**, /follow/**, /portal/**, /notice/**, /swagger-ui/**,
+            - Path=/favor/**, /user/**, /follow/**, /portal/**, /notice/**, /swagger-ui/**,/relation/**

@@ -15,7 +15,7 @@ public class Author implements Serializable {
 
     @Id
     private String _id;
-
+    private String index;
     private String aid;
     private String name;
     private Integer h_index;

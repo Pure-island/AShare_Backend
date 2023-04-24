@@ -29,8 +29,9 @@ public class AuthorService {
      */
     public Map queryAuthor(String aid) {
 
-        Query query = new Query(Criteria.where("_id").is(aid));
+        Query query = new Query(Criteria.where("index").is(aid));
         Map authors = mongoTemplate.findOne(query, Map.class, "author");
+        authors.put("aid",authors.get("index"));
         //System.out.println(authors);
         return authors;
     }
@@ -42,8 +43,9 @@ public class AuthorService {
      * @param authorId
      */
     public void bindUser(Integer userId, String username, String authorId) {
-        Query query = new Query(Criteria.where("aid").is(authorId));
-        Update update = new Update().set("user_id", userId).set("username", username);
+        Query query = new Query(Criteria.where("index").is(authorId));
+        //Update update = new Update().set("user_id", userId).set("username", username);
+        Update update = new Update().set("user_id", userId);
         mongoTemplate.updateFirst(query, update, "author");
     }
 
@@ -53,10 +55,13 @@ public class AuthorService {
      * @param author
      */
     public void updateById(Change author) {
-        Query query = new Query(Criteria.where("aid").is(author.getAid()));
-        Update update = new Update().set("name", author.getExpertName()).set("phone", author.getPhoneNumber()).set("email", author.getEmail())
-                                    .set("orgination", author.getOrgination()).set("address", author.getAddress()).set("homepage", author.getHomepage())
-                                    .set("sex", author.getSex()).set("expertInfo", author.getExpertInfo()).set("work", author.getWork()).set("edu", author.getEdu());
+        System.out.println("orgination:"+author.getOrgination().toString());
+        Query query = new Query(Criteria.where("index").is(author.getAid()));
+        //Update update = new Update().set("name", author.getExpertName()).set("phone", author.getPhoneNumber()).set("email", author.getEmail())
+         //                           .set("orgination", author.getOrgination()).set("address", author.getAddress()).set("homepage", author.getHomepage())
+         //                           .set("sex", author.getSex()).set("expertInfo", author.getExpertInfo()).set("work", author.getWork()).set("edu", author.getEdu());
+        Update update = new Update().set("name", author.getExpertName()).set("affiliations",author.getOrgination());
+
         mongoTemplate.updateFirst(query, update,"author");
     }
 
@@ -73,7 +78,9 @@ public class AuthorService {
         List<Map> list = mongoTemplate.find(query.with(pageable), Map.class, "author");
         for (Map map : list) {
             String portalId = map.get("_id").toString();
-            map.put("aid", portalId);
+            map.put("_id", portalId);
+            String aid=map.get("index").toString();
+            map.put("aid",aid);
         }
         long count = (pageNum + 1) * pageSize;
         if (list.size() == pageSize) count += pageSize;
@@ -86,7 +93,7 @@ public class AuthorService {
      * @param aid
      */
     public void unBindById(String aid) {
-        Query query = new Query(Criteria.where("aid").is(aid));
+        Query query = new Query(Criteria.where("index").is(aid));
         Update update = new Update().unset("user_id");
         mongoTemplate.updateFirst(query, update, "author");
     }
@@ -95,7 +102,7 @@ public class AuthorService {
     public void getNameByUserId(List<MessageList> personList) {
         for (MessageList messageList : personList) {
             if (messageList.getAid() != null && !messageList.getAid().equals("")) {
-                Query query = new Query(Criteria.where("aid").is(messageList.getAid()));
+                Query query = new Query(Criteria.where("index").is(messageList.getAid()));
                 Map author = mongoTemplate.findOne(query, Map.class, "author");
                 messageList.setAuthorName((String) author.get("name"));
             }

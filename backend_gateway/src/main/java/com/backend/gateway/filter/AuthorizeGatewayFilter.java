@@ -37,6 +37,8 @@ public class AuthorizeGatewayFilter implements GlobalFilter, Ordered {
         String path = request.getPath().value();
         Map<String, Object> map = new HashMap<>();
         System.out.println("请求后端路径：" + path);
+        return chain.filter(exchange);
+        /*
         try {
             if (isIgnoreHttpUrls(path)) {
                 return chain.filter(exchange);
@@ -68,7 +70,7 @@ public class AuthorizeGatewayFilter implements GlobalFilter, Ordered {
             System.out.println("网关异常：" + e);
             map.put("msg", "网关异常：" + e);
             return unauthorizedResponse(exchange, map);
-        }
+        }*/
     }
 
     /**
