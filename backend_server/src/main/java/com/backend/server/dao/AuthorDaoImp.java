@@ -19,7 +19,7 @@ public class AuthorDaoImp implements AuthorDao {
 
 	@Override
 	public Author findAuthorById(String id) {
-		Query query = new Query(Criteria.where("aid").is(id));
+		Query query = new Query(Criteria.where("index").is(id));
 		return mongoTemplate.findOne(query, Author.class);
 	}
 	@Override

@@ -4,10 +4,11 @@ import com.backend.server.dao.AuthorDaoImp;
 import com.backend.server.entity.Author;
 import com.backend.server.entity.Follow;
 import com.backend.server.entity.User;
-import com.backend.server.utils.JwtTokenUtil;
 import com.backend.server.mapper.FollowMapper;
 import com.backend.server.mapper.UserMapper;
+import com.backend.server.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,13 +28,17 @@ public class FollowService {
     private AuthorDaoImp authorDaoImp;
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     /**
      * 添加关注
      * @param followingId 被关注者id
      */
     public void addFollowing(Integer followerId, String followingId) {
+
         Follow follow = new Follow(null,followerId,followingId,new Date());
+
         followMapper.insert(follow);
     }
 
