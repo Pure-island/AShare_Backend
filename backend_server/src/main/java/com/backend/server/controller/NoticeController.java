@@ -41,7 +41,7 @@ public class NoticeController {
         //Integer userId = 18;
         List<Notice> notices = noticeService.getMessageByUserId(userId);
         List<MessageList> personList = userService.getUserByNotice(notices, userId);
-        authorService.getNameByUserId(personList);
+//        authorService.getNameByUserId(personList);
 
         return Result.create(200, "success", personList);
     }

@@ -4,6 +4,7 @@ import com.backend.server.entity.User;
 import com.backend.server.entity.pojo.Result;
 import com.backend.server.entity.pojo.StatusCode;
 import com.backend.server.mapper.UserMapper;
+import com.backend.server.service.PortalService;
 import com.backend.server.service.UserService;
 import com.backend.server.utils.FormatUtil;
 import com.backend.server.utils.JwtTokenUtil;
@@ -32,6 +33,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private FormatUtil formatUtil;
+    @Autowired
+    private PortalService portalService;
 
     /**
      * 登录返回token
@@ -154,6 +157,23 @@ public class UserController {
             e.printStackTrace();
         }
         return Result.create(200, "上传头像成功");
+    }
+
+    @PostMapping("/retrievePassword")
+    public Result retrievePassword(String email, String code) {
+//        System.out.println("check code");
+//        System.out.println("userId"+userId.toString());
+//        System.out.println("aid"+aid);
+//        System.out.println("email"+email);
+//        System.out.println("code:"+code);
+        //查看验证码是否正确，复用了门户服务中的发送验证码功能
+        boolean isTrue = portalService.checkMailCode(email, code);
+        if (!isTrue) return Result.create(StatusCode.CODE_ERROR, "验证码错误");
+        //发送密码
+        User user = userService.getUserByMail(email);
+        String pwd = user.getPassword();
+        userService.sendMail(email,pwd);
+        return Result.create(200, "success");
     }
 
 }

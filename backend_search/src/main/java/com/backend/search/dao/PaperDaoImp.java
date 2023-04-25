@@ -107,17 +107,17 @@ public class PaperDaoImp implements PaperDao {
 			Integer pageSize) {
 
 		TextQuery query = new TextQuery(input);
-//		if (startYear != null && startYear <= 1901)
-//			startYear = null;
-//		if (endYear != null && endYear >= 2025)
-//			endYear = null;
-//
-//		if (startYear != null && endYear != null)
-//			query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
-//		else if (endYear != null)
-//			query.addCriteria(Criteria.where("year").lte(endYear));
-//		else if (startYear != null)
-//			query.addCriteria(Criteria.where("year").gte(startYear));
+		if (startYear != null && startYear <= 1901)
+			startYear = null;
+		if (endYear != null && endYear >= 2025)
+			endYear = null;
+
+		if (startYear != null && endYear != null)
+			query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
+		else if (endYear != null)
+			query.addCriteria(Criteria.where("year").lte(endYear));
+		else if (startYear != null)
+			query.addCriteria(Criteria.where("year").gte(startYear));
 
 		Pageable pageable = PageRequest.of(pageNum, pageSize);
 
@@ -127,6 +127,7 @@ public class PaperDaoImp implements PaperDao {
 		else
 			count = mongoTemplate.count(query, Paper.class);
 
+//		mongoTemplate.IndexOps
 		List<Paper> list = mongoTemplate.find(query.with(pageable), Paper.class);
 		return new PageImpl<Paper>(list, pageable, count);
 	}
@@ -168,7 +169,7 @@ public class PaperDaoImp implements PaperDao {
 
 	private boolean havePaper(Query query) {
 		query.skip(MAX_COUNT).limit(1);
-		List<Paper> list = mongoTemplate.find(query, Paper.class);
+		List<Paper> list = mongoTemplate.find(query, Paper.class, "paper");
 		query.skip(0).limit(0);
 		return list.size() >= 1;
 	}

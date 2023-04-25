@@ -19,8 +19,9 @@ public class PaperDaoImp implements PaperDao {
 
 	@Override
 	public Paper findPaperById(String id) {
+		System.out.println("findPaperById:"+id);
 		Query query = new Query(Criteria.where("pid").is(id));
-		return mongoTemplate.findOne(query, Paper.class);
+		return mongoTemplate.findOne(query, Paper.class, "paper");
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package com.backend.server.entity;
 
 import com.backend.server.entity.paperSon.author;
-import com.backend.server.entity.paperSon.venue;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,7 +16,7 @@ public class Paper {
     private String pid;
     private String title;
     private List<author> authors;
-    private venue venue;
+    private String venue;
     private Integer year;
     private List<String> keywords;
     private Integer nCitation;

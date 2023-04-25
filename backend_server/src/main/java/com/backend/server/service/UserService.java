@@ -9,13 +9,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -27,6 +26,8 @@ public class UserService {
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private JavaMailSenderImpl javaMailSender;
 
     /**
      * 登录
@@ -194,5 +195,29 @@ public class UserService {
         User user = userMapper.selectOne(queryWrapper);
         user.setAid("");
         userMapper.updateById(user);
+    }
+
+    /**
+     * 发送密码
+     * @param mail 邮箱
+     */
+    public void sendMail(String mail, String pwd) {
+        System.out.println("mail = " + mail);
+        Map<String, String> map = new HashMap<>();
+        map.put("mail", mail);
+        map.put("pwd", pwd);
+        SimpleMailMessage mailMessage=new SimpleMailMessage();
+        mailMessage.setTo(mail);
+        mailMessage.setSubject("找回密码");
+        mailMessage.setText("密码:"+pwd);
+        mailMessage.setFrom("Ashare");
+        System.out.println("密码邮件是否能发送");
+        javaMailSender.send(mailMessage);
+        System.out.println("密码邮件发送over");
+        //保存发送记录
+        // redisTemplate.opsForValue()
+        //         .set("MAIL_" + mail, code, 1, TimeUnit.MINUTES);
+        // rabbitTemplate.convertAndSend("MAIL", map);
+
     }
 }

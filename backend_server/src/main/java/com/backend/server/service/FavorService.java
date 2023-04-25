@@ -30,6 +30,7 @@ public class FavorService {
      */
     public List<Paper> getFavorList(){
         User user = userService.getUserById(jwtTokenUtil.getUserIdFromRequest(request));
+        System.out.println("getFavorList:" + user.getId());
         Map<String, Object> columnMap = new HashMap<>();
         columnMap.put("user_id",user.getId());
         List<Favor> ids = favorMapper.selectByMap(columnMap);

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class PortalService {
@@ -76,7 +75,7 @@ public class PortalService {
         mailMessage.setTo(mail);
         mailMessage.setSubject("测试");
         mailMessage.setText("验证码:"+code);
-        mailMessage.setFrom("1723072376@qq.com");
+        mailMessage.setFrom("Ashare");
         System.out.println("测试邮件是否能发送");
         javaMailSender.send(mailMessage);
         System.out.println("测试邮件发送over");

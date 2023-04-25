@@ -17,7 +17,7 @@ public class Paper {
 	private String pid;
 	private String title;
 	private List<author> authors;
-	private venue venue;
+	private String venue;
 	private Integer year;
 	private List<String> keywords;
 	private Integer n_citation;
