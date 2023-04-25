@@ -6,6 +6,9 @@ import com.backend.server.entity.pojo.ReferPaperResult;
 import com.backend.server.entity.pojo.Result;
 import com.backend.server.service.CoauthorService;
 import com.backend.server.service.PaperService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags="关联检索")
 @RequestMapping("/relation")
 @RestController
 public class RelationController {
@@ -24,6 +28,7 @@ public class RelationController {
     public PaperService paperService;
 
 
+    @ApiOperation(value="查看关联学者接口")
     @PostMapping("/getAuthor")
     public Result getAuthor(String aid)
     {
@@ -31,6 +36,7 @@ public class RelationController {
         return Result.create(200,"success",cr);
     }
 
+    @ApiOperation(value="查看关联论文接口")
     @PostMapping("/getRelatePaper")
     public Result getRelatePaper(String pid)
     {
