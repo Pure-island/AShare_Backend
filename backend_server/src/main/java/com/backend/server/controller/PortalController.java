@@ -1,12 +1,16 @@
 package com.backend.server.controller;
 
-import com.backend.server.entity.pojo.*;
+import com.backend.server.entity.pojo.Change;
+import com.backend.server.entity.pojo.PortalReturn;
+import com.backend.server.entity.pojo.Result;
+import com.backend.server.entity.pojo.StatusCode;
 import com.backend.server.service.AuthorService;
 import com.backend.server.service.PaperService;
 import com.backend.server.service.PortalService;
 import com.backend.server.service.UserService;
 import com.backend.server.utils.FormatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +35,9 @@ public class PortalController {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @GetMapping("/test")
     public Result test() {
@@ -147,5 +154,14 @@ public class PortalController {
         authorService.unBindById(aid);
         userService.unBindById(aid);
         return Result.create(200,"解绑成功");
+    }
+
+    /**
+     * 创建索引
+     */
+    @PostMapping("/cridx")
+    public Result cri() {
+//        mongoTemplate.indexOps(Paper.class).ensureIndex(new Index().on("pid", Sort.Direction.ASC));
+        return Result.create(200,"成功");
     }
 }

@@ -30,56 +30,10 @@ public class CoauthorService {
             String target=a.get("aid_2").toString();
 
             Integer label=Integer.parseInt(a.get("collaborations").toString());
-            CoauthorNode cn=new CoauthorNode();
-            cn.setId(source);
-            Query query2 = new Query(Criteria.where("index").is(source));
-            Map author = mongoTemplate.findOne(query2, Map.class, "author");
-            String tempName="";
-            if(author==null)
-            cn.setName("佚名");
-            else
-            {
-                tempName=author.get("name").toString();
-                cn.setName(tempName);
-            }
-            System.out.println("aid1:"+source+" name:"+tempName);
-            boolean isNew=true;
-            for (CoauthorNode oldNode:coauthorResult.getNodes()
-                 ) {
-                if(oldNode.getId().equals(source))
-                {
-                    isNew=false;
-                    break;
-                }
-            }
-            if(isNew)
-            coauthorResult.getNodes().add(cn);
 
-            CoauthorNode cn1=new CoauthorNode();
-            cn1.setId(target);
-            Query query3 = new Query(Criteria.where("index").is(target));
-            Map author1 = mongoTemplate.findOne(query3, Map.class, "author");
+            func(coauthorResult, source);
 
-            String tempName1="";
-            if(author1==null)
-                cn1.setName("佚名");
-            else
-            {
-                tempName1=author1.get("name").toString();
-                cn1.setName(tempName1);
-            }
-            System.out.println("aid1:"+target+" name:"+tempName1);
-            boolean isNew1=true;
-            for (CoauthorNode oldNode:coauthorResult.getNodes()
-            ) {
-                if(oldNode.getId().equals(target))
-                {
-                    isNew1=false;
-                    break;
-                }
-            }
-            if(isNew1)
-                coauthorResult.getNodes().add(cn1);
+            func(coauthorResult, target);
 
             CoauthorLink cl1=new CoauthorLink();
             cl1.setSource(source);
@@ -144,5 +98,32 @@ public class CoauthorService {
 
         //System.out.println(authors);
         return coauthorResult;
+    }
+
+    private void func(CoauthorResult coauthorResult, String source) {
+        CoauthorNode cn=new CoauthorNode();
+        cn.setId(source);
+        Query query2 = new Query(Criteria.where("index").is(source));
+        Map author = mongoTemplate.findOne(query2, Map.class, "author");
+        String tempName="";
+        if(author==null)
+        cn.setName("佚名");
+        else
+        {
+            tempName=author.get("name").toString();
+            cn.setName(tempName);
+        }
+        System.out.println("aid1:"+source+" name:"+tempName);
+        boolean isNew=true;
+        for (CoauthorNode oldNode:coauthorResult.getNodes()
+             ) {
+            if(oldNode.getId().equals(source))
+            {
+                isNew=false;
+                break;
+            }
+        }
+        if(isNew)
+        coauthorResult.getNodes().add(cn);
     }
 }
