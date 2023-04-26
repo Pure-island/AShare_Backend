@@ -130,7 +130,7 @@ public class UserController {
         User user = userService.getUserById(userId);
         return Result.create(StatusCode.OK, "获取成功",user);
     }
-    @RequestMapping("/getId")
+    @PostMapping("/getId")
     public Result getUserIdByName(String userName){
         Integer uid = userService.getUserByName(userName).getId();
         return Result.create(StatusCode.OK,"成功",uid);
