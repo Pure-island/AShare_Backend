@@ -54,6 +54,10 @@ public class PortalService {
     public boolean checkMailCode(String mail, String code) {
         //String mailCode = redisTemplate.opsForValue().get("MAIL_" + mail);
         String mailCode=codes.get(mail);
+        System.out.println("真验证码："+mailCode);
+        System.out.println("输入验证码:" + code);
+        System.out.println("邮箱:" + mail);
+        System.out.println(code.equals(mailCode));
         return code.equals(mailCode);
     }
     @Autowired

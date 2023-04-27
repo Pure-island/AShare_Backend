@@ -167,6 +167,8 @@ public class UserController {
 //        System.out.println("email"+email);
 //        System.out.println("code:"+code);
         //查看验证码是否正确，复用了门户服务中的发送验证码功能
+//        System.out.println("验证码："+code);
+//        System.out.println("邮箱："+ email);
         boolean isTrue = portalService.checkMailCode(email, code);
         if (!isTrue) return Result.create(StatusCode.CODE_ERROR, "验证码错误");
         //发送密码

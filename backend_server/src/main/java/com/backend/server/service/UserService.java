@@ -220,7 +220,7 @@ public class UserService {
         mailMessage.setTo(mail);
         mailMessage.setSubject("找回密码");
         mailMessage.setText("密码:"+pwd);
-        mailMessage.setFrom("Ashare");
+        mailMessage.setFrom("1723072376@qq.com");
         System.out.println("密码邮件是否能发送");
         javaMailSender.send(mailMessage);
         System.out.println("密码邮件发送over");
