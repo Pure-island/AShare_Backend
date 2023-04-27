@@ -1,9 +1,12 @@
 package com.backend.server.controller;
 
 import com.backend.server.entity.Author;
+import com.backend.server.entity.User;
 import com.backend.server.entity.pojo.Result;
 import com.backend.server.entity.pojo.StatusCode;
 import com.backend.server.service.FollowService;
+import com.backend.server.service.UserService;
+import com.backend.server.service.NoticeService;
 import com.backend.server.utils.FormatUtil;
 import com.backend.server.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,10 @@ public class FollowController {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private NoticeService noticeService;
     /**
      * 查询关注列表
      */
@@ -48,7 +55,11 @@ public class FollowController {
             if(followService.isFollowed(followerId,person_id))
                 return Result.create(StatusCode.OK,"已关注该学者");
             followService.addFollowing(followerId,person_id);
-            return Result.create(StatusCode.OK, "关注成功");
+            User result = userService.getUserByAid(person_id);
+            String notifierName = userService.getUserById(followerId).getUserName();
+            String receiverName = result.getUserName();
+            noticeService.sendMessage("我已经关注了你，开始聊天吧！", result.getId(), followerId, notifierName, receiverName, 1);
+            return Result.create(StatusCode.OK, "关注成功", result);
         } catch (RuntimeException e) {
             return Result.create(StatusCode.ERROR, e.getMessage());
         }

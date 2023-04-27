@@ -183,6 +183,16 @@ public class UserService {
         return messageLists;
     }
 
+    public User getUserByAid(String aid) {
+        Map<String, Object> columnMap = new HashMap<>();
+        columnMap.put("aid", aid);
+        try {
+            return userMapper.selectByMap(columnMap).get(0);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
     public void bindPortal(Integer userId, String aid) {
         User user = userMapper.selectById(userId);
         user.setAid(aid);
