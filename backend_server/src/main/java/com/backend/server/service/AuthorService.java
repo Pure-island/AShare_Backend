@@ -10,12 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthorService {
@@ -74,7 +74,8 @@ public class AuthorService {
      * @return
      */
     public Page<Map> findAuthorByName(String name, Integer pageNum, Integer pageSize) {
-        TextQuery query = new TextQuery(name);
+        Pattern pattern = Pattern.compile("^.*" + name + ".*$", Pattern.CASE_INSENSITIVE);
+        Query query = new Query(Criteria.where("name").regex(pattern));
     	Pageable pageable = PageRequest.of(pageNum, pageSize);
         List<Map> list = mongoTemplate.find(query.with(pageable), Map.class, "author");
         for (Map map : list) {

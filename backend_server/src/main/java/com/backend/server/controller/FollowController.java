@@ -56,9 +56,11 @@ public class FollowController {
                 return Result.create(StatusCode.OK,"已关注该学者");
             followService.addFollowing(followerId,person_id);
             User result = userService.getUserByAid(person_id);
-            String notifierName = userService.getUserById(followerId).getUserName();
-            String receiverName = result.getUserName();
-            noticeService.sendMessage("我已经关注了你，开始聊天吧！", result.getId(), followerId, notifierName, receiverName, 1);
+            if(result != null){
+                String notifierName = userService.getUserById(followerId).getUserName();
+                String receiverName = result.getUserName();
+                noticeService.sendMessage("我已经关注了你，开始聊天吧！", result.getId(), followerId, notifierName, receiverName, 1);
+            }
             return Result.create(StatusCode.OK, "关注成功", result);
         } catch (RuntimeException e) {
             return Result.create(StatusCode.ERROR, e.getMessage());
