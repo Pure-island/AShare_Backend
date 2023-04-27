@@ -73,9 +73,9 @@ public class PortalService {
         map.put("code", code);
         SimpleMailMessage mailMessage=new SimpleMailMessage();
         mailMessage.setTo(mail);
-        mailMessage.setSubject("测试");
+        mailMessage.setSubject("Ashare");
         mailMessage.setText("验证码:"+code);
-        mailMessage.setFrom("Ashare");
+        mailMessage.setFrom("1723072376@qq.com");
         System.out.println("测试邮件是否能发送");
         javaMailSender.send(mailMessage);
         System.out.println("测试邮件发送over");
