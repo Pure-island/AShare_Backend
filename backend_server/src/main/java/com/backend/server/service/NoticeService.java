@@ -1,7 +1,6 @@
 package com.backend.server.service;
 
 import com.backend.server.entity.Notice;
-import com.backend.server.entity.pojo.Message;
 import com.backend.server.mapper.NoticeMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ public class NoticeService {
 
 
     public void sendMessage(String content, Integer target, Integer userId, String notifierName, String receiverName, Integer type) {
+        System.out.println(content);
         Notice notice = new Notice();
         notice.setContent(content);
         notice.setNotifierId(userId);
