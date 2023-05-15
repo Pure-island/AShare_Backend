@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthorService {
@@ -74,10 +75,10 @@ public class AuthorService {
      */
     public Page<Map> findAuthorByName(String name, Integer pageNum, Integer pageSize) {
         String str =   name.replaceAll("\\.", "\\\\.") ;
-//        Pattern pattern = Pattern.compile(str , Pattern.CASE_INSENSITIVE);
-        System.out.println(str);
-//        Query query = new Query(Criteria.where("name").regex(pattern));
-        Query query = new Query(Criteria.where("name").regex(str));
+        Pattern pattern = Pattern.compile(str , Pattern.CASE_INSENSITIVE);
+//        System.out.println(str);
+        Query query = new Query(Criteria.where("name").regex(pattern));
+//        Query query = new Query(Criteria.where("name").regex(str));
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         List<Map> list = mongoTemplate.find(query.with(pageable), Map.class, "author");
         for (Map map : list) {

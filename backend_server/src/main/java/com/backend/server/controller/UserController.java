@@ -173,6 +173,8 @@ public class UserController {
         if (!isTrue) return Result.create(StatusCode.CODE_ERROR, "验证码错误");
         //发送密码
         User user = userService.getUserByMail(email);
+        if(user == null)
+            return Result.create(404, "邮箱未被注册");
         String pwd = user.getPassword();
         userService.sendMail(email,pwd);
         return Result.create(200, "success");
