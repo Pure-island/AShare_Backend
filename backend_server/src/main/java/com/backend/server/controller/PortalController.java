@@ -1,19 +1,23 @@
 package com.backend.server.controller;
 
+import com.backend.server.entity.User;
 import com.backend.server.entity.pojo.Change;
 import com.backend.server.entity.pojo.PortalReturn;
 import com.backend.server.entity.pojo.Result;
 import com.backend.server.entity.pojo.StatusCode;
+import com.backend.server.mapper.UserMapper;
 import com.backend.server.service.AuthorService;
 import com.backend.server.service.PaperService;
 import com.backend.server.service.PortalService;
 import com.backend.server.service.UserService;
 import com.backend.server.utils.FormatUtil;
+import com.backend.server.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +42,15 @@ public class PortalController {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping("/test")
     public Result test() {
@@ -148,6 +161,27 @@ public class PortalController {
             return Result.create(200,"发送成功");
        // }
     }
+
+    /**
+     * 发送用户已绑定邮箱验证
+     * @return
+     */
+    @GetMapping("/personal_center/academic_homepage/sendUsermail")
+    public Result sendUsermail(){
+        User user = userMapper.selectById(jwtTokenUtil.getUserIdFromRequest(request));
+        String mail = user.getMail();
+        if (!FormatUtil.checkMail(mail)) return Result.create(StatusCode.INFORMATION_ERROR, "用户未绑定邮箱！");
+        //String redisMailCode = redisTemplate.opsForValue().get("MAIL_" + mail);
+        //if(redisMailCode!=null){
+        //   return Result.create(200,"请稍后再发送");
+        //}else{
+        System.out.println("controller:发送邮件");
+        portalService.sendMail(mail);
+        System.out.println("controller:发送邮件over");
+        return Result.create(200,"发送成功");
+        // }
+    }
+
 
     @PostMapping("/personal_center/academic_homepage/unbind")
     public Result unBindPortal(String aid) {

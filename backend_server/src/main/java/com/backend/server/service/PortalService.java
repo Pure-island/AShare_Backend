@@ -2,13 +2,17 @@ package com.backend.server.service;
 
 import com.backend.server.entity.Portal;
 import com.backend.server.mapper.PortalMapper;
+import com.backend.server.mapper.UserMapper;
+import com.backend.server.utils.JwtTokenUtil;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -23,6 +27,13 @@ public class PortalService {
     private RabbitTemplate rabbitTemplate;
 
     public Map<String,String>codes=new HashMap<>();
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private HttpServletRequest request;
 
     public Portal selectById(Integer portalId) {
         Portal portal = portalMapper.selectById(portalId);
@@ -53,6 +64,9 @@ public class PortalService {
      */
     public boolean checkMailCode(String mail, String code) {
         //String mailCode = redisTemplate.opsForValue().get("MAIL_" + mail);
+        if(mail.length()==0){
+            mail = userMapper.selectById(jwtTokenUtil.getUserIdFromRequest(request)).getMail();
+        }
         String mailCode=codes.get(mail);
         System.out.println("真验证码："+mailCode);
         System.out.println("输入验证码:" + code);
@@ -81,7 +95,11 @@ public class PortalService {
         mailMessage.setText("验证码:"+code);
         mailMessage.setFrom("1723072376@qq.com");
         System.out.println("测试邮件是否能发送");
-        javaMailSender.send(mailMessage);
+        try{
+            javaMailSender.send(mailMessage);
+        }catch (MailSendException e){
+            return;
+        }
         System.out.println("测试邮件发送over");
         if(codes.containsKey(mail))
         {

@@ -58,7 +58,9 @@ public class UserController {
      * 用户注册
      */
     @PostMapping("/register")
-    public Result register(String username,String email, String password) {
+    public Result register(String username,String email, String password, String code) {
+        boolean isTrue = portalService.checkMailCode(email, code);
+        if (!isTrue) return Result.create(StatusCode.CODE_ERROR, "验证码错误");
         if (!formatUtil.checkStringNull(username,password,email)) {
             return Result.create(StatusCode.ERROR, "注册失败，字段不完整");
         }
