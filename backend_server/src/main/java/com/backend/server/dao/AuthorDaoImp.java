@@ -20,8 +20,10 @@ public class AuthorDaoImp implements AuthorDao {
 	@Override
 	public Author findAuthorById(String id) {
 		Query query = new Query(Criteria.where("index").is(id));
+		System.out.println(id);
 		return mongoTemplate.findOne(query, Author.class);
 	}
+
 	@Override
 	public List<Author> Demo(String field, String context) {
 		Pattern pattern = Pattern.compile(".*?" + context + ".*");

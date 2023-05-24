@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -111,17 +112,19 @@ public class PaperDaoImp implements PaperDao {
 //        System.out.println(str);
 		Query query = new Query(Criteria.where("Title").regex(pattern));
 
-		if (startYear != null && startYear <= 1901)
-			startYear = null;
-		if (endYear != null && endYear >= 2025)
-			endYear = null;
+//		TextQuery query = new TextQuery(input);
 
-		if (startYear != null && endYear != null)
-			query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
-		else if (endYear != null)
-			query.addCriteria(Criteria.where("year").lte(endYear));
-		else if (startYear != null)
-			query.addCriteria(Criteria.where("year").gte(startYear));
+		if (startYear == null || startYear <= 1901)
+			startYear = 1900;
+		if (endYear == null || endYear >= 2025)
+			endYear = 2030;
+
+//		if (startYear != null && endYear != null)
+//			query.addCriteria(Criteria.where("year").gte(startYear).lte(endYear));
+//		else if (endYear != null)
+//			query.addCriteria(Criteria.where("year").lte(endYear));
+//		else if (startYear != null)
+//			query.addCriteria(Criteria.where("year").gte(startYear));
 
 		Pageable pageable = PageRequest.of(pageNum, pageSize);
 
@@ -133,7 +136,13 @@ public class PaperDaoImp implements PaperDao {
 
 //		mongoTemplate.IndexOps
 		List<Paper> list = mongoTemplate.find(query.with(pageable), Paper.class);
-		return new PageImpl<Paper>(list, pageable, count);
+		List<Paper> ret_list = new ArrayList<>();
+		for(Paper p : list){
+			if(p.getYear()>=startYear && p.getYear()<=endYear){
+				ret_list.add(p);
+			}
+		}
+		return new PageImpl<Paper>(ret_list, pageable, count);
 	}
 
 	@Override

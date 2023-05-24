@@ -54,8 +54,12 @@ public class FollowController {
         try {
             if(followService.isFollowed(followerId,person_id))
                 return Result.create(StatusCode.OK,"已关注该学者");
-            followService.addFollowing(followerId,person_id);
             User result = userService.getUserByAid(person_id);
+            if(followerId == result.getId()){
+                return Result.create(StatusCode.ERROR,"不能关注自己！");
+            }
+            followService.addFollowing(followerId,person_id);
+
             if(result != null){
                 String notifierName = userService.getUserById(followerId).getUserName();
                 String receiverName = result.getUserName();

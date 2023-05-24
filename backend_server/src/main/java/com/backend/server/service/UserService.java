@@ -165,6 +165,9 @@ public class UserService {
         List<MessageList> messageLists = new ArrayList<>();
         for (Notice notice : notices) {
             if (notice.getNotifierId().equals(userId) || notice.getReceiverId().equals(userId)) {
+                if(notice.getNotifierId().equals(userId) && notice.getReceiverId().equals(userId)){
+                    continue;
+                }
                 Integer targetId = null;
                 if (notice.getReceiverId().equals(userId)) targetId = notice.getNotifierId();
                 else targetId = notice.getReceiverId();

@@ -46,7 +46,11 @@ public class NoticeService {
     public List<Notice> getMessageByIds(Integer userId, Integer target) {
         QueryWrapper<Notice> queryWrapper = new QueryWrapper<Notice>();
         queryWrapper.in("notifier_id", Arrays.asList(userId, target)).in("receiver_id",Arrays.asList(userId, target) ).orderByDesc("create_time");
-        List<Notice> notices = noticeMapper.selectList(queryWrapper);
+        List<Notice> row_notices = noticeMapper.selectList(queryWrapper);
+        List<Notice> notices = new ArrayList<>();
+        for(Notice n : row_notices){
+            if(n.getNotifierId() != n.getReceiverId()) notices.add(n);
+        }
         return notices;
     }
 }

@@ -56,11 +56,13 @@ public class AuthorService {
      * @param author
      */
     public void updateById(Change author) {
+        System.out.println("updateById:");
         System.out.println("orgination:"+author.getOrgination().toString());
+        System.out.println("name:"+author.getExpertName().toString());
         Query query = new Query(Criteria.where("index").is(author.getAid()));
-        //Update update = new Update().set("name", author.getExpertName()).set("phone", author.getPhoneNumber()).set("email", author.getEmail())
-         //                           .set("orgination", author.getOrgination()).set("address", author.getAddress()).set("homepage", author.getHomepage())
-         //                           .set("sex", author.getSex()).set("expertInfo", author.getExpertInfo()).set("work", author.getWork()).set("edu", author.getEdu());
+//        Update update = new Update().set("name", author.getExpertName()).set("phone", author.getPhoneNumber()).set("email", author.getEmail())
+//                                    .set("affiliations", author.getOrgination()).set("address", author.getAddress()).set("homepage", author.getHomepage())
+//                                    .set("sex", author.getSex());
         Update update = new Update().set("name", author.getExpertName()).set("affiliations",author.getOrgination());
 
         mongoTemplate.updateFirst(query, update,"author");
