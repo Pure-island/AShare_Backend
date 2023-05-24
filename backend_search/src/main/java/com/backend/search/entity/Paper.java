@@ -3,6 +3,7 @@ package com.backend.search.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class Paper {
 	@TableId
 	private String _id;
 	private String pid;
+	@TextIndexed
 	private String title;
 	private List<author> authors;
 	private String venue;

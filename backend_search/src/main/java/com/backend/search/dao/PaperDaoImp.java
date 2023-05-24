@@ -106,7 +106,11 @@ public class PaperDaoImp implements PaperDao {
 	public Page<Paper> findPaperByKeywords(String input, Integer startYear, Integer endYear, Integer pageNum,
 			Integer pageSize) {
 
-		TextQuery query = new TextQuery(input);
+		String str =  input.replaceAll("\\.", "\\\\.") ;
+		Pattern pattern = Pattern.compile(str , Pattern.CASE_INSENSITIVE);
+//        System.out.println(str);
+		Query query = new Query(Criteria.where("Title").regex(pattern));
+
 		if (startYear != null && startYear <= 1901)
 			startYear = null;
 		if (endYear != null && endYear >= 2025)
@@ -121,7 +125,7 @@ public class PaperDaoImp implements PaperDao {
 
 		Pageable pageable = PageRequest.of(pageNum, pageSize);
 
-		Long count;
+		long count;
 		if (havePaper(query))
 			count = 1000L;
 		else
