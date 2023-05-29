@@ -3,9 +3,10 @@ package com.backend.server.service;
 import com.backend.server.entity.Notice;
 import com.backend.server.entity.User;
 import com.backend.server.entity.pojo.MessageList;
-import com.backend.server.utils.JwtTokenUtil;
 import com.backend.server.mapper.UserMapper;
+import com.backend.server.utils.JwtTokenUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,7 +15,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -29,6 +33,8 @@ public class UserService {
     @Autowired
     private JavaMailSenderImpl javaMailSender;
 
+    private final static String SALT="加油,骚年!";  //加盐处理
+
     /**
      * 登录
      * @param  username 用户名
@@ -37,6 +43,7 @@ public class UserService {
      */
     public Map<String, Object> login(String username, String password) throws RuntimeException {
         try {
+            password = getMd5Password(password);
             User dbUser = this.getUserByName(username);
             System.out.println("dbUser = " + dbUser.getUserName());
             if (null == dbUser || !password.equals(dbUser.getPassword())) {
@@ -61,6 +68,7 @@ public class UserService {
      * @return 用户名、角色、token
      */
     public Map<String, Object> register(String username,String email,String password) throws RuntimeException {
+        password = getMd5Password(password);
         if (getUserByName(username) != null) {
             throw new RuntimeException("用户名已存在");
         }
@@ -114,6 +122,8 @@ public class UserService {
      * @param newPassword 新密码
      */
     public Boolean updatePassword(String oldPassword,String newPassword) {
+        oldPassword = getMd5Password(oldPassword);
+        newPassword = getMd5Password(newPassword);
         User user = userMapper.selectById(jwtTokenUtil.getUserIdFromRequest(request));
         if(!user.getPassword().equals(oldPassword)) return false;
         user.setPassword(newPassword);
@@ -216,13 +226,10 @@ public class UserService {
      */
     public void sendMail(String mail, String pwd) {
         System.out.println("mail = " + mail);
-        Map<String, String> map = new HashMap<>();
-        map.put("mail", mail);
-        map.put("pwd", pwd);
         SimpleMailMessage mailMessage=new SimpleMailMessage();
         mailMessage.setTo(mail);
         mailMessage.setSubject("找回密码");
-        mailMessage.setText("密码:"+pwd);
+        mailMessage.setText("您的密码已被重置为:" + pwd);
         mailMessage.setFrom("1723072376@qq.com");
         System.out.println("密码邮件是否能发送");
         javaMailSender.send(mailMessage);
@@ -232,5 +239,9 @@ public class UserService {
         //         .set("MAIL_" + mail, code, 1, TimeUnit.MINUTES);
         // rabbitTemplate.convertAndSend("MAIL", map);
 
+    }
+
+    public static  String getMd5Password(String password){
+        return DigestUtils.md5Hex(password+SALT);  //使用了加盐处理
     }
 }

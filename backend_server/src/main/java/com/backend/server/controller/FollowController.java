@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("follow")
@@ -55,12 +56,15 @@ public class FollowController {
             if(followService.isFollowed(followerId,person_id))
                 return Result.create(StatusCode.OK,"已关注该学者");
             User result = userService.getUserByAid(person_id);
-            if(followerId == result.getId()){
-                return Result.create(StatusCode.ERROR,"不能关注自己！");
-            }
-            followService.addFollowing(followerId,person_id);
+
 
             if(result != null){
+                if(Objects.equals(followerId, result.getId())){
+                    return Result.create(StatusCode.ERROR,"不能关注自己！");
+                }
+                followService.addFollowing(followerId,person_id);
+                System.out.println(followerId);
+                System.out.println(result.getId());
                 String notifierName = userService.getUserById(followerId).getUserName();
                 String receiverName = result.getUserName();
                 noticeService.sendMessage("我已经关注了你，开始聊天吧！", result.getId(), followerId, notifierName, receiverName, 1);
@@ -119,8 +123,13 @@ public class FollowController {
         if (!formatUtil.checkStringNull(person_id)) {
             return Result.create(StatusCode.ERROR, "person_id为空");
         }
-        Integer userId = jwtTokenUtil.getUserIdFromRequest(request);
-        boolean flag = followService.isFollowed(userId,person_id);
-        return Result.create(StatusCode.OK, "查询成功", flag);
+        try{
+            Integer userId = jwtTokenUtil.getUserIdFromRequest(request);
+            boolean flag = followService.isFollowed(userId,person_id);
+            return Result.create(StatusCode.OK, "查询成功", flag);
+        }catch (RuntimeException e){
+            return Result.create(StatusCode.ERROR, "用户未登录");
+        }
+
     }
 }

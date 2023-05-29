@@ -73,7 +73,12 @@ public class FavorController {
         if (!formatUtil.checkStringNull(paper_id)) {
             return Result.create(StatusCode.ERROR, "paper_id为空");
         }
-        Integer userId = jwtTokenUtil.getUserIdFromRequest(request);
-        return Result.create(StatusCode.OK, "查询成功", favorService.isFavored(paper_id,userId));
+        try{
+            Integer userId = jwtTokenUtil.getUserIdFromRequest(request);
+            return Result.create(StatusCode.OK, "查询成功", favorService.isFavored(paper_id,userId));
+        }catch (RuntimeException e){
+            return Result.create(StatusCode.ERROR, "用户未登录");
+        }
+
     }
 }

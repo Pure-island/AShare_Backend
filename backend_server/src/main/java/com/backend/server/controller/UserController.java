@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Random;
 
 @Api(tags = {"用户"})
 @RestController
@@ -35,6 +36,8 @@ public class UserController {
     private FormatUtil formatUtil;
     @Autowired
     private PortalService portalService;
+
+
 
     /**
      * 登录返回token
@@ -132,6 +135,20 @@ public class UserController {
         User user = userService.getUserById(userId);
         return Result.create(StatusCode.OK, "获取成功",user);
     }
+
+
+    /**
+     * 加密密码
+     */
+//    @GetMapping("/uppwd")
+//    public Result uppwd(){
+//        for(User u: userMapper.selectList(null)){
+//            u.setPassword(UserService.getMd5Password(u.getPassword()));
+//            userMapper.updateById(u);
+//        }
+//        return Result.create(StatusCode.OK,"成功");
+//    }
+
     @PostMapping("/getId")
     public Result getUserIdByName(String userName){
         Integer uid = userService.getUserByName(userName).getId();
@@ -177,9 +194,15 @@ public class UserController {
         User user = userService.getUserByMail(email);
         if(user == null)
             return Result.create(404, "邮箱未被注册");
-        String pwd = user.getPassword();
+        Random _random = new Random();
+        int random = _random.nextInt(899999) + 100001;
+        String pwd = String.valueOf(random);
+        user.setPassword(UserService.getMd5Password(pwd));
+        userMapper.updateById(user);
         userService.sendMail(email,pwd);
         return Result.create(200, "success");
     }
 
 }
+
+

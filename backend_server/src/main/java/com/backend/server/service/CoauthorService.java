@@ -22,8 +22,15 @@ public class CoauthorService {
         Query query = new Query(Criteria.where("aid_1").is(aid));
         List<Map> authors = mongoTemplate.find(query,Map.class, "coauthor");
         Query query1 = new Query(Criteria.where("aid_2").is(aid));
-        List<Map> authors1 = mongoTemplate.find(query,Map.class, "coauthor");
+        List<Map> authors1 = mongoTemplate.find(query1,Map.class, "coauthor");
         CoauthorResult coauthorResult=new CoauthorResult();
+
+        for(Map a: authors1){
+            String temp = a.get("aid_1").toString();
+            a.put("aid_1", a.get("aid_2"));
+            a.put("aid_2",temp);
+        }
+        authors.addAll(authors1);
         for (Map a:authors
              ) {
             String source=a.get("aid_1").toString();
@@ -113,7 +120,7 @@ public class CoauthorService {
             tempName=author.get("name").toString();
             cn.setName(tempName);
         }
-        System.out.println("aid1:"+source+" name:"+tempName);
+//        System.out.println("aid1:"+source+" name:"+tempName);
         boolean isNew=true;
         for (CoauthorNode oldNode:coauthorResult.getNodes()
              ) {
